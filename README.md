@@ -22,6 +22,8 @@ Este repositorio documenta el **diseño de una arquitectura analítica conceptua
 
 ![alt text](image.png)
 
+![p1](https://github.com/user-attachments/assets/1879f646-76a3-488e-a644-a75184a1a690)
+
 ---
 
 ## 🗺️ Descripción de la Arquitectura por Fases
