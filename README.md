@@ -358,5 +358,5 @@ Las áreas de **Riesgos**, **Legal** y **Actuaría** identifican discrepancias e
 
 ---
 
-**Conclusión:**  
+**Conclusión:** 
 La decisión no es imponer el modelo ML, sino integrarlo dentro de una gobernanza sólida, donde actúe como una herramienta cuantitativa adicional, validada, explicable y supervisada, capaz de convivir con los enfoques tradicionales y cumplir con las expectativas regulatorias.
