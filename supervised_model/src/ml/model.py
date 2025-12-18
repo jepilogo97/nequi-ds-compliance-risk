@@ -15,7 +15,7 @@ ModelType = Literal["logreg", "rf", "xgb"]
 class ModelConfig:
     model_type: ModelType = "logreg"
 
-    # Manejo de desbalanceo: opción simple y muy efectiva
+    # Manejo de desbalanceo
     class_weight: Optional[str] = "balanced"  # None o "balanced"
 
     # Logistic Regression params
@@ -57,15 +57,3 @@ def build_model(cfg: ModelConfig):
             n_jobs=-1,
         )
     raise ValueError(f"Unsupported model_type: {cfg.model_type}")
-
-# - `ModelConfig.class_weight` por defecto está en 'balanced', lo que hace que
-#   los clasificadores penalicen más los errores sobre la clase minoritaria.
-#   Es una solución rápida y efectiva para desbalance moderado.
-# - `logreg` (Regresión Logística) es una buena línea base: interpretable,
-#   rápida y permite obtener coeficientes para explicar la relación entre
-#   features y la probabilidad de `critical_flag`.
-# - `RandomForest` es una opción más robusta frente a relaciones no lineales
-#   y outliers; también acepta `class_weight` y proporciona medidas de
-#   importancia de features (aunque menos interpretables que coeficientes).
-# - Para desbalance severo se recomienda combinar `class_weight` con técnicas
-#   de sobremuestreo (SMOTE) o submuestreo dependiente del caso de uso.

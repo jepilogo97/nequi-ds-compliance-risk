@@ -54,13 +54,13 @@ def main() -> None:
         # así los imports internos de risk_matrix que usan el paquete `src` funcionan.
         import sys
         repo_root = Path(__file__).parents[2]
-        # añadir el paquete risk_matrix (no su subcarpeta src) para que `import src...` funcione
+        # añadir el paquete risk_matrix 
         risk_pkg = repo_root / "risk_matrix"
         if str(risk_pkg) not in sys.path:
             sys.path.insert(0, str(risk_pkg))
 
         try:
-            # intentar importar el pipeline como `src.pipeline` (usa la carpeta risk_matrix/src)
+            # intentar importar el pipeline como `src.pipeline`
             from src.pipeline import run_pipeline
         except Exception as e:
             # fallback: intentar importar como paquete completo risk_matrix.src.pipeline

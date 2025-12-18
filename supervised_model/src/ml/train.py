@@ -107,20 +107,6 @@ def train_supervised_model(
     - Manejo de desbalanceo (class_weight y opcional SMOTE)
     - Explicabilidad (coef/permutation importance)
     """
-    # 1) `FeatureSpec` define las columnas que usaremos como features y el target.
-    # 2) `split_xy` separa X e y. Se realiza un split estratificado cuando es
-    #    posible para mantener la proporción de la clase positiva en train/test.
-    # 3) `build_preprocessor` construye un preprocesador robusto:
-    #    - imputación de numéricos (mediana)
-    #    - OneHotEncoding para categóricos (ignorando categorías desconocidas)
-    #    El preprocesador se coloca dentro de la `Pipeline` para evitar fugas de datos.
-    # 4) Manejo de desbalanceo:
-    #    - Por defecto los clasificadores usan `class_weight='balanced'` (ver `ModelConfig`).
-    #    - Si el desbalance es extremo, `use_smote=True` aplica SMOTE dentro de la pipeline
-    #      (sobremuestreo de la clase minoritaria). Requiere instalar `imbalanced-learn`.
-    # 5) Explicabilidad ligera:
-    #    - Si el modelo es regresión logística, devolvemos coeficientes ordenados.
-    #    - Además calculamos permutation importance sobre el conjunto de test.
     feature_spec = feature_spec or FeatureSpec()
     model_cfg = model_cfg or ModelConfig()
 
@@ -133,9 +119,6 @@ def train_supervised_model(
     )
 
     preprocessor, numeric_cols, categorical_cols = build_preprocessor(df, feature_spec)
-
-    # Construcción del modelo. Para XGBoost queremos calcular `scale_pos_weight`
-    # a partir de `y_train` cuando `class_weight='balanced'`.
     model = None
     if model_cfg.model_type == "xgb":
         try:
@@ -174,7 +157,7 @@ def train_supervised_model(
         ]
     )
 
-    # Opción SMOTE (requiere imbalanced-learn): útil si el desbalance es extremo
+    # Opción SMOTE
     if use_smote:
         try:
             from imblearn.pipeline import Pipeline as ImbPipeline
@@ -198,7 +181,7 @@ def train_supervised_model(
     # Predicciones
     y_pred = pipe.predict(X_test)
 
-    # Scores para AUCs (si el modelo lo permite)
+    # Scores para AUCs
     y_score = None
     if hasattr(pipe, "predict_proba"):
         y_score = pipe.predict_proba(X_test)[:, 1]

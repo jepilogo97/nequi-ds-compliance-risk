@@ -28,13 +28,6 @@ def build_preprocessor(df: pd.DataFrame, spec: FeatureSpec) -> tuple[ColumnTrans
     - OHE para categóricos (ignore unknown)
     Además, agrega features opcionales si existen.
     """
-    # - `numeric` incluye las columnas numéricas básicas y opcionales si están
-    #   presentes en el dataframe (p. ej. `freq_annual_adj`, `severity_avg`).
-    # - Para numéricos usamos `SimpleImputer(strategy='median')` para resiliencia
-    #   frente a outliers y valores faltantes.
-    # - Para categóricos imputamos la moda y aplicamos OneHotEncoder con
-    #   `handle_unknown='ignore'` para que el pipeline sea tolerant a nuevas
-    #   categorías en datos de producción.
     numeric = list(spec.numeric_cols)
     for c in spec.optional_numeric_cols:
         if c in df.columns:
