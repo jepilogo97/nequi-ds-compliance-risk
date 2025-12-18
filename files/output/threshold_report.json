@@ -1,0 +1,26 @@
+{
+  "best": {
+    "t1": 0.3999999999999986,
+    "t2": 0.7916666666666666,
+    "prop_low": 0.7,
+    "prop_med": 0.18666666666666668,
+    "prop_high": 0.11333333333333333,
+    "recall_high": 0.425,
+    "fp_rate_high": 0.0,
+    "crit_in_high": 34,
+    "non_in_high": 0,
+    "prop_ok": true,
+    "fp_ok": true,
+    "p1": 70,
+    "p2": 89,
+    "reason": "feasible_prop_fp"
+  },
+  "bootstrap": {
+    "recall_mean": 0.4259451738603171,
+    "recall_ci_2.5": 0.31727560414269274,
+    "recall_ci_97.5": 0.5350556829348182,
+    "fp_mean": 0.0,
+    "fp_ci_2.5": 0.0,
+    "fp_ci_97.5": 0.0
+  }
+}
