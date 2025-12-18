@@ -3,6 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
 
+from .data_driven_config import (
+    DEFAULT_CONTROLS_FREQ_MULTIPLIER,
+    DEFAULT_CONTROLS_LEVEL_MAPPING,
+    DEFAULT_FREQ_BINS,
+    DEFAULT_SEV_BINS,
+)
+
 ScoreMethod = Literal["quantile", "fixed"]
 
 
@@ -24,10 +31,10 @@ class RiskMatrixConfig:
     impact_method: ScoreMethod = "quantile"
 
     # Frecuencia anual (eventos/año) -> probabilidad 1..5
-    freq_bins: tuple[float, float, float, float] = (0.2, 0.5, 1.0, 2.0)
+    freq_bins: tuple[float, float, float, float] = DEFAULT_FREQ_BINS
 
     # Severidad promedio (loss/evento) -> impacto 1..5
-    sev_bins: tuple[float, float, float, float] = (1_000, 10_000, 50_000, 200_000)
+    sev_bins: tuple[float, float, float, float] = DEFAULT_SEV_BINS
 
     # controls_level esperado: 1=alto control ... 5=bajo control
     # Factor multiplicativo sobre la frecuencia anual:
@@ -45,11 +52,7 @@ def ensure_config(cfg: RiskMatrixConfig | None) -> RiskMatrixConfig:
             impact_method=cfg.impact_method,
             freq_bins=cfg.freq_bins,
             sev_bins=cfg.sev_bins,
-            controls_freq_multiplier={1: 0.70, 2: 0.85, 3: 1.00, 4: 1.15, 5: 1.30},
-            controls_level_mapping={
-                                    "Alto": 1,
-                                    "Medio": 3,
-                                    "Bajo": 5,
-                                }
+            controls_freq_multiplier=DEFAULT_CONTROLS_FREQ_MULTIPLIER,
+            controls_level_mapping=DEFAULT_CONTROLS_LEVEL_MAPPING,
         )
     return cfg

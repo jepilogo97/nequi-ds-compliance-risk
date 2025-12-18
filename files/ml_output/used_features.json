@@ -1,0 +1,14 @@
+{
+  "numeric": [
+    "events_last_3y",
+    "total_loss_last_3y",
+    "freq_annual_adj",
+    "severity_avg",
+    "el_annual_adj"
+  ],
+  "categorical": [
+    "process",
+    "risk_type",
+    "controls_level"
+  ]
+}

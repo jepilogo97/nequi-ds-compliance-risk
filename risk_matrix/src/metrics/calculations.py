@@ -29,7 +29,6 @@ def compute_metrics(df: pd.DataFrame, cfg: RiskMatrixConfig | None = None) -> pd
     out["freq_annual"] = out["events_last_3y"] / cfg.years_window
 
     # Severidad promedio (loss/evento) — si no hay eventos, severidad 0
-    # Round total losses to whole units before computing severity average
     out["severity_avg"] = _safe_div(out["total_loss_last_3y"].round(0), out["events_last_3y"])
 
     # Pérdida esperada anual base (Expected Loss): freq * severity
