@@ -306,3 +306,57 @@ $$\frac{FP_{alto}}{N_{non}}\le 0.15$$
 - Riesgos y trade-offs: mejorar `recall_high` puede aumentar carga operativa por revisiones manuales; presentamos curvas de trade-off y estimaciones de impacto operativo.
 
 ---
+
+# 4. Problema de Escenario – Gobernanza y Conflictos
+
+### Escenario
+Las áreas de **Riesgos**, **Legal** y **Actuaría** identifican discrepancias entre los criterios tradicionales (reglas expertas, matrices estáticas, supuestos actuariales) y los resultados generados por un **modelo de Machine Learning** para evaluación de riesgo. Estas diferencias generan fricción operativa, dudas sobre la validez del modelo y riesgos de cumplimiento regulatorio.  
+
+---
+
+### ¿Cómo gestionar desacuerdos entre estos frentes?
+
+- Establecer un **foro formal de decisión** (Risk & Model Committee) con representantes de Riesgos, Legal, Actuaría, Data Science y Compliance.
+- Separar claramente **roles y responsabilidades**:
+  - Riesgos: apetito de riesgo y uso del output.
+  - Actuaría: coherencia estadística y supuestos.
+  - Data Science: desempeño, estabilidad y sesgo del modelo.
+  - Legal/Compliance: alineación regulatoria y trazabilidad.
+- Utilizar **evidencia cuantitativa** para la discusión:
+  - Comparación ML vs. criterios tradicionales (backtesting).
+  - Análisis de impacto en métricas clave (pérdida esperada, reservas, solvencia).
+- Documentar explícitamente **excepciones y overrides**, evitando decisiones ad-hoc.
+
+---
+
+### ¿Cómo definir gobernanza?
+
+- Implementar un **framework de gobernanza de modelos** que incluya:
+  - Ciclo de vida del modelo (diseño, validación, despliegue, monitoreo, retiro).
+  - Validación independiente (Model Validation / Second Line).
+  - KPIs de seguimiento: performance, estabilidad, drift, explainability.
+- Definir al ML como **modelo complementario**, no sustitutivo:
+  - ML apoya la toma de decisiones.
+  - La decisión final permanece bajo responsabilidad del negocio.
+- Mantener **versionamiento y control de cambios**:
+  - Cambios en features, bins, thresholds o datasets deben ser aprobados y auditables.
+
+---
+
+### ¿Cómo explicar al regulador?
+
+- Presentar el modelo como un **mecanismo de apoyo a la gestión del riesgo**.
+- Enfatizar:
+  - Explicabilidad del modelo (features, importancia, lógica de scoring).
+  - Consistencia con criterios tradicionales (alineación conceptual).
+  - Evidencia empírica de mejora (menor error, mejor detección, reducción de pérdidas).
+- Proveer documentación clara:
+  - Supuestos del modelo.
+  - Limitaciones conocidas.
+  - Controles implementados (monitoreo, overrides, revisión humana).
+- Demostrar que existe **gobernanza activa**, trazabilidad y accountability, alineada con principios de gestión prudencial y regulatoria.
+
+---
+
+**Conclusión:**  
+La decisión no es imponer el modelo ML, sino integrarlo dentro de una gobernanza sólida, donde actúe como una herramienta cuantitativa adicional, validada, explicable y supervisada, capaz de convivir con los enfoques tradicionales y cumplir con las expectativas regulatorias.
