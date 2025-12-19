@@ -50,8 +50,6 @@ def main() -> None:
 
     # Si se solicita, ejecutar pipeline de risk_matrix para enriquecer features
     if args.use_risk_metrics:
-        # Para importar el pipeline de risk_matrix, añadimos risk_matrix/src al sys.path
-        # así los imports internos de risk_matrix que usan el paquete `src` funcionan.
         import sys
         repo_root = Path(__file__).parents[2]
         # añadir el paquete risk_matrix 
@@ -99,8 +97,10 @@ def main() -> None:
 
     # Metrics
     metrics_path = out_dir / "metrics.json"
+    metrics_data = res["metrics"]
+    metrics_data["model_type"] = args.model_type
     with open(metrics_path, "w", encoding="utf-8") as fh:
-        json.dump(res["metrics"], fh, indent=2, ensure_ascii=False)
+        json.dump(metrics_data, fh, indent=2, ensure_ascii=False)
 
     # Used features
     features_path = out_dir / "used_features.json"
@@ -114,7 +114,13 @@ def main() -> None:
     if explain.get("top_permutation_importance") is not None:
         explain["top_permutation_importance"].to_csv(out_dir / "top_permutation_importance.csv", index=False)
 
-    # Guardar matriz de confusión y curvas PR/ROC como PNG (si hay datos de test)
+    # Guardar predicciones para ploteo externo
+    y_test = res.get("y_test")
+    y_score = res.get("y_score")
+    if y_test is not None and y_score is not None:
+        pd.DataFrame({"y_true": y_test, "y_score": y_score}).to_csv(out_dir / "predictions.csv", index=False)
+
+    # Guardar matriz de confusión y curvas PR/ROC como PNG
     y_test = res.get("y_test")
     y_pred = res.get("y_pred")
     y_score = res.get("y_score")

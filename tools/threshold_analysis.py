@@ -9,48 +9,59 @@ import pandas as pd
 OUT = Path("files/output")
 OUT.mkdir(parents=True, exist_ok=True)
 
-# Load artifacts
+# Cargar artefactos
 grid_path = Path("files/output/threshold_grid_results.csv")
 best_path = Path("files/output/threshold_best.json")
 annotated_path = Path("files/output/annotated_scores.csv")
 
 if not grid_path.exists() or not best_path.exists() or not annotated_path.exists():
-    raise SystemExit("Required files not found in files/output. Run threshold optimizer first.")
+    raise SystemExit("Archivos requeridos no encontrados en files/output. Ejecuta primero el optimizador de umbrales.")
 
 grid = pd.read_csv(grid_path)
 with open(best_path, "r", encoding="utf8") as f:
     best = json.load(f)
 ann = pd.read_csv(annotated_path)
 
-# Trade-off scatter
+# Gráfico de dispersión trade-off
 plt.figure(figsize=(8, 6))
-sc = plt.scatter(grid['fp_rate_high'], grid['recall_high'],
-                 c=grid['prop_ok'].astype(int), cmap='viridis', alpha=0.8)
-plt.colorbar(sc, label='prop_ok (1=ok,0=not)')
+sc = plt.scatter(
+    grid['fp_rate_high'],
+    grid['recall_high'],
+    c=grid['prop_ok'].astype(int),
+    cmap='viridis',
+    alpha=0.8
+)
+plt.colorbar(sc, label='prop_ok (1=ok, 0=no)')
 plt.xlabel('FP rate (alto)')
 plt.ylabel('Recall (alto)')
 plt.title('Trade-off: Recall vs FP rate (grid)')
-# annotate best
-plt.scatter([best['fp_rate_high']], [best['recall_high']], c='red', s=80, label='best')
+# Anotar el mejor punto
+plt.scatter(
+    [best['fp_rate_high']],
+    [best['recall_high']],
+    c='red',
+    s=80,
+    label='best'
+)
 plt.legend()
 tradeoff_file = OUT / 'tradeoff_scatter.png'
 plt.tight_layout()
 plt.savefig(tradeoff_file)
 plt.close()
 
-# Proportions bar for best
+# Gráfico de barras de proporciones para la mejor configuración
 props = [best['prop_low'], best['prop_med'], best['prop_high']]
 labels = ['bajo', 'medio', 'alto']
 plt.figure(figsize=(6, 4))
 plt.bar(labels, props, color=['#4CAF50', '#FFC107', '#F44336'])
 plt.ylim(0, 1)
-plt.title('Proporciones bajo/medio/alto (umbral seleccionado)')
+plt.title('Proporciones bajo / medio / alto (umbral seleccionado)')
 prop_file = OUT / 'proportions_best.png'
 plt.tight_layout()
 plt.savefig(prop_file)
 plt.close()
 
-# Bootstrap for chosen thresholds
+# Bootstrap para los umbrales seleccionados
 t1 = best['t1']
 t2 = best['t2']
 labels = ann['is_critical'].astype(bool)
@@ -61,6 +72,7 @@ rng = np.random.default_rng(0)
 recalls = []
 fprs = []
 N = len(ann)
+
 for _ in range(n_boot):
     idx = rng.integers(0, N, N)
     s = scores.values[idx]
@@ -81,13 +93,13 @@ fprs = np.array(fprs)
 ci_rec = np.percentile(recalls, [2.5, 97.5])
 ci_fp = np.percentile(fprs, [2.5, 97.5])
 
-# Save histograms
+# Guardar histogramas
 plt.figure(figsize=(8, 4))
 plt.hist(recalls, bins=30, color='C0', alpha=0.8)
 plt.axvline(best['recall_high'], color='red', linestyle='--', label='best')
 plt.title('Bootstrap recall_high')
 plt.xlabel('Recall (alto)')
-plt.ylabel('Frequency')
+plt.ylabel('Frecuencia')
 plt.legend()
 plt.tight_layout()
 plt.savefig(OUT / 'bootstrap_recall.png')
@@ -98,13 +110,13 @@ plt.hist(fprs, bins=30, color='C1', alpha=0.8)
 plt.axvline(best['fp_rate_high'], color='red', linestyle='--', label='best')
 plt.title('Bootstrap fp_rate_high')
 plt.xlabel('FP rate (alto)')
-plt.ylabel('Frequency')
+plt.ylabel('Frecuencia')
 plt.legend()
 plt.tight_layout()
 plt.savefig(OUT / 'bootstrap_fp.png')
 plt.close()
 
-# Write simple report
+# Escribir reporte simple
 report = {
     'best': best,
     'bootstrap': {
@@ -116,8 +128,9 @@ report = {
         'fp_ci_97.5': float(ci_fp[1]),
     }
 }
+
 with open(OUT / 'threshold_report.json', 'w', encoding='utf8') as f:
     json.dump(report, f, indent=2, ensure_ascii=False)
 
-print('Saved:', tradeoff_file, prop_file, 'bootstrap images, and threshold_report.json')
+print('Guardado:', tradeoff_file, prop_file, 'imágenes de bootstrap y threshold_report.json')
 print(json.dumps(report, indent=2, ensure_ascii=False))

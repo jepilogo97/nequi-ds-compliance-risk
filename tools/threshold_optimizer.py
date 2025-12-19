@@ -56,7 +56,7 @@ def grid_search(scores, labels, p1_grid, p2_grid, prop_target=(0.7, 0.2, 0.1), t
             t1 = np.percentile(s, p1)
             t2 = np.percentile(s, p2)
             res = evaluate_thresholds(scores, labels, t1, t2)
-            # check proportions
+            # Verificar proporciones
             prop_ok = (
                 abs(res["prop_low"] - prop_target[0]) <= tol
                 and abs(res["prop_med"] - prop_target[1]) <= tol
@@ -69,7 +69,7 @@ def grid_search(scores, labels, p1_grid, p2_grid, prop_target=(0.7, 0.2, 0.1), t
 
 
 def pick_best(results, fp_max=0.15):
-    # Prefer feasible (prop_ok & fp_ok), else prefer fp_ok with highest recall
+    # Preferir factibles (prop_ok & fp_ok); si no, preferir fp_ok con mayor recall
     feasible = [r for r in results if r["prop_ok"] and r["fp_ok"]]
     if feasible:
         best = max(feasible, key=lambda x: x["recall_high"])
@@ -80,7 +80,7 @@ def pick_best(results, fp_max=0.15):
         best = max(fp_ok, key=lambda x: x["recall_high"])
         best["reason"] = "fp_ok_only"
         return best
-    # else pick best recall overall but warn
+    # Si no, elegir el mejor recall global, pero advertir
     best = max(results, key=lambda x: x["recall_high"])
     best["reason"] = "best_overall_no_fp"
     return best
@@ -94,7 +94,7 @@ def run(input_path, score_col, label_col, out_dir, **kwargs):
         raise SystemExit(f"Label column '{label_col}' not found in {input_path}")
 
     scores = df[score_col].astype(float)
-    # normalize if necessary
+    # Normalizar si es necesario
     scores = normalize_score(scores)
 
     labels = df[label_col].map({True: True, False: False}).fillna(df[label_col]).astype(bool)
@@ -117,16 +117,17 @@ def run(input_path, score_col, label_col, out_dir, **kwargs):
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # save full grid
+    # Guardar el grid completo
     pd.DataFrame(results).to_csv(out_dir / "threshold_grid_results.csv", index=False)
 
-    # save best
+    # Guardar el mejor resultado
     with open(out_dir / "threshold_best.json", "w", encoding="utf8") as f:
         json.dump(best, f, indent=2, ensure_ascii=False)
 
-    # annotate input with category
+    # Anotar el input con la categoría
     t1 = best["t1"]
     t2 = best["t2"]
+
     def cat(s):
         if s < t1:
             return "bajo"

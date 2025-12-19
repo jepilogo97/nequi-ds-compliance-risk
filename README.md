@@ -185,8 +185,8 @@ Parte B – Modelo Supervisado:
 
 - Entrenar un modelo simple para predecir `critical_flag` (baseline: regresión logística, alternativa: RandomForest o XGBoost)
 - Explicar features y proceso: uso `FeatureSpec`, preprocesador (imputación, OHE), y técnicas de explicación ligera (coeficientes, permutation importance; opcional: SHAP)
-- Métricas: accuracy, precision, recall, f1, ROC-AUC y PR-AUC; priorizar PR-AUC en datasets desbalanceados
-- Manejo de desbalanceo: `class_weight='balanced'`, opción `SMOTE` dentro de pipeline, o `scale_pos_weight` para XGBoost
+- Métricas: accuracy, precision, recall, f1, ROC-AUC y PR-AUC; PR-AUC en dataset desbalanceado.
+- Manejo de desbalanceo: `class_weight='balanced'`, opción `SMOTE` dentro de pipeline, o `scale_pos_weight` para XGBoost.
 
 Estructura del proyecto:
 

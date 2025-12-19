@@ -135,6 +135,8 @@ def train_supervised_model(
                 scale_pos_weight = 1.0
             else:
                 scale_pos_weight = neg / pos if pos > 0 else 1.0
+        
+        print(f"⚡ XGBoost: scale_pos_weight set to {scale_pos_weight:.4f} (Pos: {pos}, Neg: {neg})")
 
         model = XGBClassifier(
             n_estimators=model_cfg.n_estimators,
